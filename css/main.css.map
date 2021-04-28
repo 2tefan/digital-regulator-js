@@ -1,0 +1,10 @@
+{
+    "version": 3,
+    "mappings": "ACAA,AAAA,cAAc,CAAC;EACb,UAAU,EAAE,KAAY,CAAC,GAAG,CAAC,GAAG,CAAC,IAAI,CAAC,GAAG;CAC1C;;AAED,AAAA,MAAM,CAAC;EACL,MAAM,EAAE,IAAI;EACZ,MAAM,EAAE,GAAG;CACZ",
+    "sources": [
+        "../sass/main.scss",
+        "../sass/charts/_main_chart.scss"
+    ],
+    "names": [],
+    "file": "main.css"
+}
