@@ -1,7 +1,7 @@
 google.charts.load('current', { 'packages': ['corechart'] });
 google.charts.setOnLoadCallback(drawChart);
 
-var arr = [['t', 'u1']];
+var arr = [];
 
 // regulating distance
 var T2 = 1550; // s
@@ -17,7 +17,11 @@ for (i = 0; i < Tmax; i++) {
 }
 
 function drawChart() {
-    var data = google.visualization.arrayToDataTable(arr);
+    var data = new google.visualization.DataTable();
+    data.addColumn('number', 'ms');
+    data.addColumn('number', 'Uout');
+
+    data.addRows(arr)
 
     var options = {
         title: 'LP. 1st order',
