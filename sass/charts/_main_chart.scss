@@ -1,8 +1,19 @@
 .chart_section {
+  display: grid;
+  padding: 25px;
   box-shadow: rgb(0, 0, 0) 0px 5px 10px 0px;
+  grid-template-areas: "headline" "chart";
+
+  h1 {
+    grid-area: headline;
+    padding: 0px;
+    margin: 0px;
+  }
 }
 
 .chart {
-  height: 100%;
-  height: 50%;
+  height: 350px;
+  width: 100%;
+
+  grid-area: chart;
 }
