@@ -18,7 +18,7 @@ function lowPass(){
         lowPass.push([i, Uc, i == T2 ? Uc : null, null]);
     }
     
-    lowPass[T2][3] = "τ [" + T2 + "/" + formatFloat(lowPass[T2][1]) + "]";
+    drawPoint("τ", lowPass, T2)
     return lowPass
 }
 
@@ -52,6 +52,10 @@ function drawLowPass() {
     var chart = new google.visualization.LineChart(document.getElementById('low_pass'));
 
     chart.draw(data, options);
+}
+
+function drawPoint(name, arr, T){
+    arr[T][3] = name + " [" + T + "/" + formatFloat(arr[T][1]) + "]";
 }
 
 function formatFloat(f1) {
