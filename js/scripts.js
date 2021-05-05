@@ -60,7 +60,7 @@ function regulatingDistance() {
         Uc2 = Uc2 + dt / T2 * (Uc1 - Uc2);
         Ua = Uc2 * Vs
 
-        arr.push([i, Ua, null]);
+        arr.push([i, Ua]);
     }
 
     return arr
