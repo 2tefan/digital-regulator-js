@@ -1,32 +1,36 @@
 google.charts.load('current', { 'packages': ['corechart'] });
-google.charts.setOnLoadCallback(drawChart);
+google.charts.setOnLoadCallback(drawLowPass);
 
-var arr = [];
 
-// regulating distance
-var T2 = 1550; // s
-var Uc = 0; // V
-var Ue = 1;
-var dt = 1;
+function lowPass(){
+    var lowPass = [];
 
-var Tmax = T2 * 5; // 5 * τ
-
-for (i = 0; i < Tmax; i++) {
-    Uc = Uc + dt / T2 * (Ue - Uc);
-    arr.push([i, Uc, i == T2 ? Uc : null, null]);
+    // regulating distance
+    var T2 = 1550; // s
+    var Uc = 0; // V
+    var Ue = 1;
+    var dt = 1;
+    
+    var Tmax = T2 * 5; // 5 * τ
+    
+    for (i = 0; i < Tmax; i++) {
+        Uc = Uc + dt / T2 * (Ue - Uc);
+        lowPass.push([i, Uc, i == T2 ? Uc : null, null]);
+    }
+    
+    lowPass[T2][3] = "τ [" + T2 + "/" + formatFloat(lowPass[T2][1]) + "]";
+    return lowPass
 }
 
-arr[T2][3] = "τ [" + T2 + "/" + formatFloat(arr[T2][1]) + "]";
 
-
-function drawChart() {
+function drawLowPass() {
     var data = new google.visualization.DataTable();
     data.addColumn('number', 't');
     data.addColumn('number', 'Uout');
     data.addColumn('number', 'markedPoints');
     data.addColumn({ type: 'string', role: 'annotation' });
 
-    data.addRows(arr)
+    data.addRows(lowPass())
 
     var options = {
         title: 'Low-pass filter 1st order',
@@ -45,7 +49,7 @@ function drawChart() {
         }
     };
 
-    var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+    var chart = new google.visualization.LineChart(document.getElementById('low_pass'));
 
     chart.draw(data, options);
 }
