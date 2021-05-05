@@ -1,6 +1,7 @@
 google.charts.load('current', { 'packages': ['corechart'] });
 google.charts.setOnLoadCallback(drawLowPass);
 google.charts.setOnLoadCallback(drawLowPassSin);
+google.charts.setOnLoadCallback(drawRegulatingDistance);
 
 number = 11
 T1 = 100 + 5 * number // s
@@ -8,6 +9,26 @@ T2 = T1 * 10
 
 Vs = 0.8 + number / 100
 targetValue = 10 + number
+
+function regulatingDistance() {
+    var arr = [];
+    var Ue = 1;
+    var Uc1 = 0;
+    var Uc2 = 0;
+    var dt = 1;
+
+    var Tmax = T2 * 5;
+
+    for (i = 0; i < Tmax; i++) {
+        Uc1 = Uc1 + dt / T1 * (Ue - Uc1);
+        Uc2 = Uc2 + dt / T2 * (Uc1 - Uc2);
+        Ua = Uc2 * Vs
+
+        arr.push([i, Ua]);
+    }
+
+    return arr
+}
 
 function lowPassSin() {
     var lowPass = [];
@@ -29,7 +50,6 @@ function lowPassSin() {
 function lowPass() {
     var lowPass = [];
 
-    // regulating distance
     var Uc = 0; // V
     var Ue = 1;
     var dt = 1;
@@ -83,7 +103,6 @@ function drawLowPassSin() {
     data.addColumn('number', 't');
     data.addColumn('number', 'Uout');
     data.addColumn('number', 'Usin');
-    data.addColumn({ type: 'string', role: 'annotation' });
 
     data.addRows(lowPassSin())
 
@@ -101,6 +120,27 @@ function drawLowPassSin() {
     };
 
     var chart = new google.visualization.LineChart(document.getElementById('low_pass_sin'));
+
+    chart.draw(data, options);
+}
+
+
+function drawRegulatingDistance() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('number', 't');
+    data.addColumn('number', 'Uout');
+
+    data.addRows(regulatingDistance())
+
+    var options = {
+        title: 'Regulating distance',
+        curveType: 'function',
+        legend: { position: 'bottom' },
+        hAxis: { title: 'Time [ms]', gridlines: { interval: [1, 2, 5], count: 8 }, minorGridlines: { interval: 0.5 }, },
+        vAxis: { title: 'Voltage [V]', gridlines: { interval: [1, 2, 5], count: 8 }, },
+    };
+
+    var chart = new google.visualization.LineChart(document.getElementById('regulating_distance'));
 
     chart.draw(data, options);
 }
