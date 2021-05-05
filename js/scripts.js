@@ -41,7 +41,7 @@ function lowPassSin() {
     for (i = 0; i < Tmax; i++) {
         Usin = 10 * Math.sin(1 / T2 * i);
         Uc = Uc + dt / T2 * (Usin - Uc);
-        lowPass.push([i, Uc, Usin, null]);
+        lowPass.push([i, Uc, Usin]);
     }
 
     return lowPass
@@ -75,22 +75,17 @@ function drawLowPass() {
 
     data.addRows(lowPass())
 
-    var options = {
-        title: 'Low-pass filter 1st order',
-        curveType: 'function',
-        legend: { position: 'bottom' },
-        hAxis: { title: 'Time [ms]', gridlines: { interval: 1, count: 8 }, minorGridlines: { interval: 0.5 }, },
-        vAxis: { title: 'Voltage [V]', gridlines: { interval: 1 / 8, count: 8 }, },
-        series: {
-            1: {
-                annotations: {
-                    textStyle: { fontSize: 15, color: 'red' },
-                },
-                pointSize: 5,
-                visibleInLegend: false
+
+    var options = getDefaultOptions('Low-pass filter 1st order');
+    options.series = {
+        1: {
+            annotations: {
+                textStyle: { fontSize: 15, color: 'red' },
             },
-        }
-    };
+            pointSize: 5,
+            visibleInLegend: false
+        },
+    }
 
     var chart = new google.visualization.LineChart(document.getElementById('low_pass'));
 
@@ -106,18 +101,12 @@ function drawLowPassSin() {
 
     data.addRows(lowPassSin())
 
-    var options = {
-        title: 'Low-pass filter 1st order with sin',
-        curveType: 'function',
-        legend: { position: 'bottom' },
-        hAxis: { title: 'Time [ms]', gridlines: { interval: [1, 2, 5], count: 8 }, minorGridlines: { interval: 0.5 }, },
-        vAxis: { title: 'Voltage [V]', gridlines: { interval: [1, 2, 5], count: 8 }, },
-        series: {
-            1: {
-                type: 'line', lineDashStyle: [2, 2]
-            },
-        }
-    };
+    var options = getDefaultOptions('Low-pass filter 1st order with sin');
+    options.series = {
+        1: {
+            type: 'line', lineDashStyle: [2, 2]
+        },
+    }
 
     var chart = new google.visualization.LineChart(document.getElementById('low_pass_sin'));
 
@@ -132,17 +121,21 @@ function drawRegulatingDistance() {
 
     data.addRows(regulatingDistance())
 
-    var options = {
-        title: 'Regulating distance',
-        curveType: 'function',
-        legend: { position: 'bottom' },
-        hAxis: { title: 'Time [ms]', gridlines: { interval: [1, 2, 5], count: 8 }, minorGridlines: { interval: 0.5 }, },
-        vAxis: { title: 'Voltage [V]', gridlines: { interval: [1, 2, 5], count: 8 }, },
-    };
+    var options = getDefaultOptions('Regulating distance')
 
     var chart = new google.visualization.LineChart(document.getElementById('regulating_distance'));
 
     chart.draw(data, options);
+}
+
+function getDefaultOptions(title) {
+    return {
+        title: title,
+        curveType: 'function',
+        legend: { position: 'bottom' },
+        hAxis: { title: 'Time [ms]', gridlines: { interval: [1, 2, 5], count: 8 }, minorGridlines: { interval: 0.5 }, },
+        vAxis: { title: 'Voltage [V]', gridlines: { interval: [1, 2, 5], count: 8 }, },
+    }
 }
 
 function drawPoint(name, arr, T) {
