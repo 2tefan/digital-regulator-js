@@ -10,24 +10,23 @@ T2 = T1 * 10
 Vs = 0.8 + number / 100
 targetValue = 10 + number
 
-function regulatingDistance() {
-    var arr = [];
+
+function lowPass() {
+    var lowPass = [];
+
+    var Uc = 0; // V
     var Ue = 1;
-    var Uc1 = 0;
-    var Uc2 = 0;
     var dt = 1;
 
-    var Tmax = T2 * 5;
+    var Tmax = T2 * 5; // 5 * τ
 
     for (i = 0; i < Tmax; i++) {
-        Uc1 = Uc1 + dt / T1 * (Ue - Uc1);
-        Uc2 = Uc2 + dt / T2 * (Uc1 - Uc2);
-        Ua = Uc2 * Vs
-
-        arr.push([i, Ua]);
+        Uc = Uc + dt / T2 * (Ue - Uc);
+        lowPass.push([i, Uc, i == T2 ? Uc : null, null]);
     }
 
-    return arr
+    drawPoint("τ", lowPass, T2)
+    return lowPass
 }
 
 function lowPassSin() {
@@ -47,22 +46,24 @@ function lowPassSin() {
     return lowPass
 }
 
-function lowPass() {
-    var lowPass = [];
-
-    var Uc = 0; // V
+function regulatingDistance() {
+    var arr = [];
     var Ue = 1;
+    var Uc1 = 0;
+    var Uc2 = 0;
     var dt = 1;
 
-    var Tmax = T2 * 5; // 5 * τ
+    var Tmax = T2 * 5;
 
     for (i = 0; i < Tmax; i++) {
-        Uc = Uc + dt / T2 * (Ue - Uc);
-        lowPass.push([i, Uc, i == T2 ? Uc : null, null]);
+        Uc1 = Uc1 + dt / T1 * (Ue - Uc1);
+        Uc2 = Uc2 + dt / T2 * (Uc1 - Uc2);
+        Ua = Uc2 * Vs
+
+        arr.push([i, Ua, null]);
     }
 
-    drawPoint("τ", lowPass, T2)
-    return lowPass
+    return arr
 }
 
 
@@ -92,7 +93,6 @@ function drawLowPass() {
     chart.draw(data, options);
 }
 
-
 function drawLowPassSin() {
     var data = new google.visualization.DataTable();
     data.addColumn('number', 't');
@@ -112,7 +112,6 @@ function drawLowPassSin() {
 
     chart.draw(data, options);
 }
-
 
 function drawRegulatingDistance() {
     var data = new google.visualization.DataTable();
