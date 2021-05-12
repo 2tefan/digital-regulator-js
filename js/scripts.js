@@ -2,6 +2,7 @@ google.charts.load('current', { 'packages': ['corechart'] });
 google.charts.setOnLoadCallback(drawLowPass);
 google.charts.setOnLoadCallback(drawLowPassSin);
 google.charts.setOnLoadCallback(drawRegulatingDistance);
+google.charts.setOnLoadCallback(drawTwoPointRegulator);
 
 number = 11
 T1 = 100 + 5 * number // s
@@ -9,6 +10,7 @@ T2 = T1 * 10
 
 Vs = 0.8 + number / 100
 targetValue = 10 + number
+
 
 
 function lowPass() {
@@ -119,6 +121,61 @@ function regulatingDistance() {
     return arr
 }
 
+function _regulatingDistance() {
+    let arr = [];
+    let Ue = 1;
+    let Uc1 = 0;
+    let Uc2 = 0;
+    let dt = 1;
+
+    let Tmax = T2 * 5;
+
+
+    for (i = 0; i < Tmax; i++) {
+        Uc1 = Uc1 + dt / T1 * (Ue - Uc1);
+        Uc2 = Uc2 + dt / T2 * (Uc1 - Uc2);
+        Ua = Uc2 * Vs
+
+        arr.push([i, Ua]);
+    }
+
+    return arr;
+}
+
+function twoPointRegulator() {
+    let arr = [];
+    let Ur = 0;
+    let Uc1 = 0;
+    let Uc2 = 0;
+    let dt = 1;
+    let Tmax = T2 * 5;
+
+
+    let hysteresis = targetValue / 10;
+    let upperValue = targetValue + hysteresis;
+    let lowerValue = targetValue - hysteresis;
+
+    let Urmax = 2 * targetValue / Vs;
+    let Urmin = 0;
+
+
+    for (i = 0; i < Tmax; i++) {
+        if (Ua > upperValue)
+            Ur = Urmin;
+
+        if (Ua < lowerValue)
+            Ur = Urmax;
+
+        Uc1 = Uc1 + dt / T1 * (Ur - Uc1);
+        Uc2 = Uc2 + dt / T2 * (Uc1 - Uc2);
+        Ua = Uc2 * Vs
+
+        arr.push([i, Ua, Ur]);
+    }
+
+    return arr
+}
+
 
 function drawLowPass() {
     let data = new google.visualization.DataTable();
@@ -185,7 +242,7 @@ function drawRegulatingDistance() {
         3: {
             color: '#f1ca3a',
             annotations: {
-                textStyle: { fontSize: 15, color:  '#f1ca3a', },
+                textStyle: { fontSize: 15, color: '#f1ca3a', },
             },
             pointSize: 5,
             visibleInLegend: false
@@ -193,15 +250,30 @@ function drawRegulatingDistance() {
         4: {
             color: '#f1ca3a',
             annotations: {
-                textStyle: { fontSize: 15, color:  '#f1ca3a', },
+                textStyle: { fontSize: 15, color: '#f1ca3a', },
             },
-            
+
             pointSize: 5,
             visibleInLegend: false
         },
     }
 
     let chart = new google.visualization.LineChart(document.getElementById('regulating_distance'));
+
+    chart.draw(data, options);
+}
+
+function drawTwoPointRegulator() {
+    let data = new google.visualization.DataTable();
+    data.addColumn('number', 't');
+    data.addColumn('number', 'Uout');
+    data.addColumn('number', 'Ur');
+
+    data.addRows(twoPointRegulator())
+
+    let options = getDefaultOptions('2-Point-Regulator');
+
+    let chart = new google.visualization.LineChart(document.getElementById('two_point_regulator'));
 
     chart.draw(data, options);
 }
