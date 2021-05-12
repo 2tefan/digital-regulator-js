@@ -3,6 +3,7 @@ google.charts.setOnLoadCallback(drawLowPass);
 google.charts.setOnLoadCallback(drawLowPassSin);
 google.charts.setOnLoadCallback(drawRegulatingDistance);
 google.charts.setOnLoadCallback(drawTwoPointRegulator);
+google.charts.setOnLoadCallback(drawTwoPointRegulatorWithoutUr);
 
 number = 11;
 T1 = 100 + 5 * number; // s
@@ -121,27 +122,6 @@ function regulatingDistance() {
     return arr
 }
 
-function _regulatingDistance() {
-    let arr = [];
-    let Ue = 1;
-    let Uc1 = 0;
-    let Uc2 = 0;
-    let dt = 1;
-
-    let Tmax = T2 * 5;
-
-
-    for (i = 0; i < Tmax; i++) {
-        Uc1 = Uc1 + dt / T1 * (Ue - Uc1);
-        Uc2 = Uc2 + dt / T2 * (Uc1 - Uc2);
-        Ua = Uc2 * Vs;
-
-        arr.push([i, Ua]);
-    }
-
-    return arr;
-}
-
 function twoPointRegulator() {
     let arr = [];
     let Ur = 0;
@@ -171,6 +151,72 @@ function twoPointRegulator() {
         Ua = Uc2 * Vs
 
         arr.push([i, Ua, Ur]);
+    }
+
+    return arr;
+}
+
+function twoPointRegulatorWithoutUr() {
+    let arr = [];
+    let Ur = 0;
+    let Uc1 = 0;
+    let Uc2 = 0;
+    let dt = 1;
+    let Tmax = T2 * 5;
+    let Ua = 0;
+
+
+    let hysteresis = targetValue / 10;
+    let upperValue = targetValue + hysteresis;
+    let lowerValue = targetValue - hysteresis;
+
+    let Urmax = 2 * targetValue / Vs;
+    let Urmin = 0;
+
+    let targetValuePassed = false
+    let Ua_n1 = Ua
+
+    let maxValuePassed = false
+    let minValuePassed = false
+
+
+    for (i = 0; i < Tmax; i++) {
+        if (Ua > upperValue)
+            Ur = Urmin;
+
+        if (Ua < lowerValue)
+            Ur = Urmax;
+
+        Uc1 = Uc1 + dt / T1 * (Ur - Uc1);
+        Uc2 = Uc2 + dt / T2 * (Uc1 - Uc2);
+        Ua = Uc2 * Vs
+
+        arr.push([i, Ua, null, null, null, null, null, null]);
+
+        if(!targetValuePassed && Ua >= targetValue)
+        {
+            targetValuePassed = true;
+            arr[i][2] = Ua;
+            drawPoint("Rise time", arr, i, 3)
+        }
+
+        if(!maxValuePassed && Ua_n1 > Ua)
+        {
+            maxValuePassed = true;
+            arr[i][4] = Ua;
+            drawPoint("Overshoot", arr, i, 5)
+        }
+
+        if(maxValuePassed && !minValuePassed && Ua_n1 < Ua)
+        {
+            minValuePassed = true;
+            arr[i][6] = Ua;
+            drawPoint("Undershoot", arr, i, 7)
+            console.log(Ua);
+        }
+
+
+        Ua_n1 = Ua
     }
 
     return arr;
@@ -278,6 +324,35 @@ function drawTwoPointRegulator() {
     chart.draw(data, options);
 }
 
+function drawTwoPointRegulatorWithoutUr() {
+    let data = new google.visualization.DataTable();
+    data.addColumn('number', 't');
+    data.addColumn('number', 'Uout');
+    data.addColumn('number', 'Rise time');
+    data.addColumn({ type: 'string', role: 'annotation' });
+    data.addColumn('number', 'Max');
+    data.addColumn({ type: 'string', role: 'annotation' });
+    data.addColumn('number', 'Min');
+    data.addColumn({ type: 'string', role: 'annotation' });
+
+    data.addRows(twoPointRegulatorWithoutUr());
+
+    let options = getDefaultOptions('2-Point-Regulator');
+    options.series = {
+        1: {
+            annotations: {
+                textStyle: { fontSize: 15, color: 'red' },
+            },
+            pointSize: 5,
+            visibleInLegend: false
+        },
+    }
+
+    let chart = new google.visualization.LineChart(document.getElementById('two_point_regulator_without_ur'));
+
+    chart.draw(data, options);
+}
+
 function getDefaultOptions(title) {
     return {
         title: title,
@@ -288,8 +363,8 @@ function getDefaultOptions(title) {
     }
 }
 
-function drawPoint(name, arr, T) {
-    arr[T][3] = name + " [" + T + "/" + formatFloat(arr[T][1]) + "]";
+function drawPoint(name, arr, time, pos = 3) {
+    arr[time][pos] = name + " [" + time + "/" + formatFloat(arr[time][1]) + "]";
 }
 
 function formatFloat(f1) {
