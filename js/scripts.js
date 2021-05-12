@@ -195,20 +195,20 @@ function twoPointRegulatorWithoutUr() {
 
         if (!targetValuePassed && Ua >= targetValue) {
             targetValuePassed = true;
-            arr[i][2] = Ua;
-            drawPoint("trise", arr, i, 3)
+            arr[i - 1][2] = Ua;
+            drawPoint("trise", arr, i - 1, 3)
         }
 
         if (!maxValuePassed && Ua_n1 > Ua) {
             maxValuePassed = true;
-            arr[i][4] = Ua;
-            drawPoint("Umax", arr, i, 5)
+            arr[i - 1][4] = Ua;
+            drawPoint("Umax", arr, i - 1, 5)
         }
 
         if (maxValuePassed && !minValuePassed && Ua_n1 < Ua) {
             minValuePassed = true;
-            arr[i][6] = Ua;
-            drawPoint("Umin", arr, i, 7)
+            arr[i - 1][6] = Ua;
+            drawPoint("Umin", arr, i - 1, 7)
         }
 
 
