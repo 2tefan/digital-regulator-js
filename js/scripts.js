@@ -162,7 +162,7 @@ function twoPointRegulatorWithoutUr() {
     let Uc1 = 0;
     let Uc2 = 0;
     let dt = 1;
-    let Tmax = T2 * 5;
+    let Tmax = T2 * 2;
     let Ua = 0;
 
 
@@ -191,28 +191,24 @@ function twoPointRegulatorWithoutUr() {
         Uc2 = Uc2 + dt / T2 * (Uc1 - Uc2);
         Ua = Uc2 * Vs
 
-        arr.push([i, Ua, null, null, null, null, null, null]);
+        arr.push([i, Ua, null, null, null, null, null, null, targetValue]);
 
-        if(!targetValuePassed && Ua >= targetValue)
-        {
+        if (!targetValuePassed && Ua >= targetValue) {
             targetValuePassed = true;
             arr[i][2] = Ua;
-            drawPoint("Rise time", arr, i, 3)
+            drawPoint("trise", arr, i, 3)
         }
 
-        if(!maxValuePassed && Ua_n1 > Ua)
-        {
+        if (!maxValuePassed && Ua_n1 > Ua) {
             maxValuePassed = true;
             arr[i][4] = Ua;
-            drawPoint("Overshoot", arr, i, 5)
+            drawPoint("Umax", arr, i, 5)
         }
 
-        if(maxValuePassed && !minValuePassed && Ua_n1 < Ua)
-        {
+        if (maxValuePassed && !minValuePassed && Ua_n1 < Ua) {
             minValuePassed = true;
             arr[i][6] = Ua;
-            drawPoint("Undershoot", arr, i, 7)
-            console.log(Ua);
+            drawPoint("Umin", arr, i, 7)
         }
 
 
@@ -334,18 +330,28 @@ function drawTwoPointRegulatorWithoutUr() {
     data.addColumn({ type: 'string', role: 'annotation' });
     data.addColumn('number', 'Min');
     data.addColumn({ type: 'string', role: 'annotation' });
+    data.addColumn('number', 'Target value');
 
     data.addRows(twoPointRegulatorWithoutUr());
 
     let options = getDefaultOptions('2-Point-Regulator');
     options.series = {
         1: {
-            annotations: {
-                textStyle: { fontSize: 15, color: 'red' },
-            },
             pointSize: 5,
             visibleInLegend: false
         },
+        2: {
+            pointSize: 5,
+            visibleInLegend: false
+        },
+        3: {
+            pointSize: 5,
+            visibleInLegend: false
+        },
+    }
+
+    options.annotations = {
+        fontSize: 15
     }
 
     let chart = new google.visualization.LineChart(document.getElementById('two_point_regulator_without_ur'));
