@@ -4,12 +4,12 @@ google.charts.setOnLoadCallback(drawLowPassSin);
 google.charts.setOnLoadCallback(drawRegulatingDistance);
 google.charts.setOnLoadCallback(drawTwoPointRegulator);
 
-number = 11
-T1 = 100 + 5 * number // s
-T2 = T1 * 10
+number = 11;
+T1 = 100 + 5 * number; // s
+T2 = T1 * 10;
 
-Vs = 0.8 + number / 100
-targetValue = 10 + number
+Vs = 0.8 + number / 100;
+targetValue = 10 + number;
 
 
 
@@ -27,8 +27,8 @@ function lowPass() {
         lowPass.push([i, Uc, i == T2 ? Uc : null, null]);
     }
 
-    drawPoint("τ", lowPass, T2)
-    return lowPass
+    drawPoint("τ", lowPass, T2);
+    return lowPass;
 }
 
 function lowPassSin() {
@@ -134,7 +134,7 @@ function _regulatingDistance() {
     for (i = 0; i < Tmax; i++) {
         Uc1 = Uc1 + dt / T1 * (Ue - Uc1);
         Uc2 = Uc2 + dt / T2 * (Uc1 - Uc2);
-        Ua = Uc2 * Vs
+        Ua = Uc2 * Vs;
 
         arr.push([i, Ua]);
     }
@@ -173,7 +173,7 @@ function twoPointRegulator() {
         arr.push([i, Ua, Ur]);
     }
 
-    return arr
+    return arr;
 }
 
 
@@ -209,7 +209,7 @@ function drawLowPassSin() {
     data.addColumn('number', 'Uout');
     data.addColumn('number', 'Usin');
 
-    data.addRows(lowPassSin())
+    data.addRows(lowPassSin());
 
     let options = getDefaultOptions('Low-pass filter 1st order with sin');
     options.series = {
@@ -234,9 +234,9 @@ function drawRegulatingDistance() {
     data.addColumn('number', 'Ta');
     data.addColumn({ type: 'string', role: 'annotation' });
 
-    data.addRows(regulatingDistance())
+    data.addRows(regulatingDistance());
 
-    let options = getDefaultOptions('Regulating distance')
+    let options = getDefaultOptions('Regulating distance');
     options.series = {
         2: { color: '#f1ca3a' },
         3: {
@@ -269,7 +269,7 @@ function drawTwoPointRegulator() {
     data.addColumn('number', 'Uout');
     data.addColumn('number', 'Ur');
 
-    data.addRows(twoPointRegulator())
+    data.addRows(twoPointRegulator());
 
     let options = getDefaultOptions('2-Point-Regulator');
 
