@@ -32,7 +32,7 @@ function pRegulator() {
         if (!targetValuePassed && Ua >= targetValue) {
             targetValuePassed = true;
             arr[i - 1][2] = Ua;
-            drawPoint("trise", arr, i - 1, 3)
+            drawPoint("trise", arr, i - 1, 3) // TODO: Could be removed
         }
 
         if (!maxValuePassed && Ua_n1 > Ua) {
