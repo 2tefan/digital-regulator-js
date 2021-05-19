@@ -11,7 +11,6 @@ function pRegulator() {
 
     let Kp = T2 / T1 * Math.sqrt(2) / (2 * Vs);
 
-    let targetValuePassed = false
     let Ua_n1 = Ua
 
     let maxValuePassed = false
@@ -27,24 +26,19 @@ function pRegulator() {
         Uc2 = Uc2 + dt / T2 * (Uc1 - Uc2);
         Ua = Uc2 * Vs
 
-        arr.push([i, Ua, null, null, null, null, null, null, targetValue]);
+        arr.push([i, Ua, null, null, null, null, targetValue]);
 
-        if (!targetValuePassed && Ua >= targetValue) {
-            targetValuePassed = true;
-            arr[i - 1][2] = Ua;
-            drawPoint("trise", arr, i - 1, 3) // TODO: Could be removed
-        }
 
         if (!maxValuePassed && Ua_n1 > Ua) {
             maxValuePassed = true;
-            arr[i - 1][4] = Ua;
-            drawPoint("Umax", arr, i - 1, 5)
+            arr[i - 1][2] = Ua;
+            drawPoint("Umax", arr, i - 1, 3)
         }
 
         if (maxValuePassed && !minValuePassed && Ua_n1 < Ua) {
             minValuePassed = true;
-            arr[i - 1][6] = Ua;
-            drawPoint("Umin", arr, i - 1, 7)
+            arr[i - 1][4] = Ua;
+            drawPoint("Umin", arr, i - 1, 5)
         }
 
 
@@ -58,8 +52,6 @@ function drawPRegulator() {
     let data = new google.visualization.DataTable();
     data.addColumn('number', 't');
     data.addColumn('number', 'Uout');
-    data.addColumn('number', 'Rise time');
-    data.addColumn({ type: 'string', role: 'annotation' });
     data.addColumn('number', 'Max');
     data.addColumn({ type: 'string', role: 'annotation' });
     data.addColumn('number', 'Min');
@@ -75,10 +67,6 @@ function drawPRegulator() {
             visibleInLegend: false
         },
         2: {
-            pointSize: 5,
-            visibleInLegend: false
-        },
-        3: {
             pointSize: 5,
             visibleInLegend: false
         },
