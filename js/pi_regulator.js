@@ -37,25 +37,22 @@ function pRegulator() {
 
         if (!maxValuePassed && Ua_n1 > Ua) {
             maxValuePassed = true;
-            arr[i - 1][2] = Ua;
-            drawPoint("Umax", arr, i - 1, 3);
+            addPoint(arr, Ua, "Umax", i, 2);
             Uamax = Ua;
         }
 
         if (maxValuePassed && !minValuePassed && Ua_n1 < Ua) {
             minValuePassed = true;
-            arr[i - 1][4] = Ua;
-            drawPoint("Umin", arr, i - 1, 5)
+            addPoint(arr, Ua, "Umin", i, 4);
         }
 
         Ua_n1 = Ua
     }
 
     // control deviation
-    arr[Tmax - 1][6] = Ua;
-    drawPoint("Udev", arr, i - 1, 7)
+    addPoint(arr, Ua, "Udev", Tmax-1, 6);
 
-    $("#p_regulator_overshoot").text(formatFloat((Uamax / Ua - 1) * 100) + " %");
+    addOvershoot("#p_regulator_overshoot", Uamax, Ua);
     return arr;
 }
 
@@ -97,31 +94,27 @@ function piRegulator() {
 
         if (!targetValuePassed && Ua >= targetValue) {
             targetValuePassed = true;
-            arr[i - 1][2] = Ua;
-            drawPoint("trise", arr, i - 1, 3)
+            addPoint(arr, Ua, "trise", i, 2);
         }
 
         if (!maxValuePassed && Ua_n1 > Ua) {
             maxValuePassed = true;
-            arr[i - 1][4] = Ua;
-            drawPoint("Umax", arr, i - 1, 5);
+            addPoint(arr, Ua, "Umax", i, 4);
             Uamax = Ua;
         }
 
         if (maxValuePassed && !minValuePassed && Ua_n1 < Ua) {
             minValuePassed = true;
-            arr[i - 1][6] = Ua;
-            drawPoint("Umin", arr, i - 1, 7)
+            addPoint(arr, Ua, "Umin", i, 6);
         }
 
         Ua_n1 = Ua
     }
 
     // control deviation
-    arr[Tmax - 1][8] = Ua;
-    drawPoint("Udev", arr, i - 1, 9)
+    addPoint(arr, Ua, "Udev", Tmax-1, 8);
 
-    $("#pi_regulator_overshoot").text(formatFloat((Uamax / Ua - 1) * 100) + " %");
+    addOvershoot("#pi_regulator_overshoot", Uamax, Ua);
     return arr;
 }
 

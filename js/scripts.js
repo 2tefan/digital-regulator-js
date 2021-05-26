@@ -26,3 +26,12 @@ function drawPoint(name, arr, time, pos = 3) {
 function formatFloat(f1) {
     return Math.round(f1 * 100) / 100;
 }
+
+function addPoint(arr, Ua, name, i, posInArr) {
+    arr[i - 1][posInArr] = Ua;
+    drawPoint(name, arr, i - 1, posInArr + 1)
+}
+
+function addOvershoot(name, Uamax, Ua) {
+    $(name).text(formatFloat((Uamax / Ua - 1) * 100) + " %");
+}
