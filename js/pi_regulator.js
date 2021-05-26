@@ -1,5 +1,9 @@
 google.charts.setOnLoadCallback(drawPRegulator);
 
+function getKp(){
+    return T2 / T1 * Math.sqrt(2) / (2 * Vs);
+}
+
 function pRegulator() {
     let arr = [];
     let Ur = 0;
@@ -9,7 +13,7 @@ function pRegulator() {
     let Tmax = T2 * 3;
     let Ua = 0;
 
-    let Kp = T2 / T1 * Math.sqrt(2) / (2 * Vs);
+    let Kp = getKp();
 
     let Ua_n1 = Ua
 
@@ -26,7 +30,7 @@ function pRegulator() {
         Uc2 = Uc2 + dt / T2 * (Uc1 - Uc2);
         Ua = Uc2 * Vs
 
-        arr.push([i, Ua, null, null, null, null, targetValue]);
+        arr.push([i, Ua, null, null, null, null, null, null, targetValue]);
 
 
         if (!maxValuePassed && Ua_n1 > Ua) {
@@ -41,9 +45,12 @@ function pRegulator() {
             drawPoint("Umin", arr, i - 1, 5)
         }
 
-
         Ua_n1 = Ua
     }
+
+    // control deviation
+    arr[Tmax - 1][6] = Ua;
+    drawPoint("Udev", arr, i - 1, 7)
 
     return arr;
 }
@@ -56,17 +63,23 @@ function drawPRegulator() {
     data.addColumn({ type: 'string', role: 'annotation' });
     data.addColumn('number', 'Min');
     data.addColumn({ type: 'string', role: 'annotation' });
+    data.addColumn('number', 'control deviation');
+    data.addColumn({ type: 'string', role: 'annotation' });
     data.addColumn('number', 'Target value');
 
     data.addRows(pRegulator());
 
-    let options = getDefaultOptions('P-Regulator');
+    let options = getDefaultOptions('P-Regulator [ Kp = ' + formatFloat(getKp()) + ' ]');
     options.series = {
         1: {
             pointSize: 5,
             visibleInLegend: false
         },
         2: {
+            pointSize: 5,
+            visibleInLegend: false
+        },
+        3: {
             pointSize: 5,
             visibleInLegend: false
         },
