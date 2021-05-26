@@ -79,41 +79,47 @@ function piRegulator() {
 
     let maxValuePassed = false
     let minValuePassed = false
+    let targetValuePassed = false
     let e = 0;
 
-    
+
     for (i = 0; i < Tmax; i++) {
         e = targetValue - Ua;
         Up = Kp * e;
-        Ui = Ui + e * dt/Ti;
+        Ui = Ui + e * dt / Ti;
         Ur = Up + Ui;
 
         Uc1 = Uc1 + dt / T1 * (Ur - Uc1);
         Uc2 = Uc2 + dt / T2 * (Uc1 - Uc2);
         Ua = Uc2 * Vs
 
-        arr.push([i, Ua, null, null, null, null, null, null, targetValue]);
+        arr.push([i, Ua, null, null, null, null, null, null, null, null, targetValue]);
 
+        if (!targetValuePassed && Ua >= targetValue) {
+            targetValuePassed = true;
+            arr[i - 1][2] = Ua;
+            drawPoint("trise", arr, i - 1, 3)
+        }
 
         if (!maxValuePassed && Ua_n1 > Ua) {
             maxValuePassed = true;
-            arr[i - 1][2] = Ua;
-            drawPoint("Umax", arr, i - 1, 3);
+            arr[i - 1][4] = Ua;
+            drawPoint("Umax", arr, i - 1, 5);
             Uamax = Ua;
         }
 
         if (maxValuePassed && !minValuePassed && Ua_n1 < Ua) {
             minValuePassed = true;
-            arr[i - 1][4] = Ua;
-            drawPoint("Umin", arr, i - 1, 5)
+            arr[i - 1][6] = Ua;
+            drawPoint("Umin", arr, i - 1, 7)
         }
 
         Ua_n1 = Ua
     }
 
     // control deviation
-    arr[Tmax - 1][6] = Ua;
-    drawPoint("Udev", arr, i - 1, 7)
+    arr[Tmax - 1][8] = Ua;
+    drawPoint("Udev", arr, i - 1, 9)
 
     $("#pi_regulator_overshoot").text(formatFloat((Uamax / Ua - 1) * 100) + " %");
     return arr;
@@ -163,6 +169,8 @@ function drawPIRegulator() {
     let data = new google.visualization.DataTable();
     data.addColumn('number', 't');
     data.addColumn('number', 'Uout');
+    data.addColumn('number', 'Rise');
+    data.addColumn({ type: 'string', role: 'annotation' });
     data.addColumn('number', 'Max');
     data.addColumn({ type: 'string', role: 'annotation' });
     data.addColumn('number', 'Min');
