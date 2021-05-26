@@ -50,9 +50,12 @@ function pRegulator() {
     }
 
     // control deviation
-    addPoint(arr, Ua, "Udev", Tmax-1, 6);
+    addPoint(arr, Ua, "Udev", Tmax - 1, 6);
 
     addOvershoot("#p_regulator_overshoot", Uamax, Ua);
+    
+    $("#p_regulator_kp").text(formatFloat(Kp));
+    $("#p_regulator_udev").text(formatFloat(targetValue-Ua) + " °C");
     return arr;
 }
 
@@ -112,9 +115,13 @@ function piRegulator() {
     }
 
     // control deviation
-    addPoint(arr, Ua, "Udev", Tmax-1, 8);
+    addPoint(arr, Ua, "Udev", Tmax - 1, 8);
 
     addOvershoot("#pi_regulator_overshoot", Uamax, Ua);
+
+    $("#pi_regulator_kp").text(formatFloat(Kp));
+    $("#pi_regulator_tn").text(formatFloat(Tn));
+    $("#pi_regulator_udev").text(formatFloat(targetValue-Ua) + " °C");
     return arr;
 }
 
@@ -132,7 +139,7 @@ function drawPRegulator() {
 
     data.addRows(pRegulator());
 
-    let options = getDefaultOptions('P-Regulator [ Kp = ' + formatFloat(getKp()) + ' ]');
+    let options = getDefaultOptions('P-Regulator');
     options.series = {
         1: {
             pointSize: 5,
@@ -174,7 +181,7 @@ function drawPIRegulator() {
 
     data.addRows(piRegulator());
 
-    let options = getDefaultOptions('PI-Regulator [ Kp = ' + formatFloat(getKp()) + ' ]');
+    let options = getDefaultOptions('PI-Regulator');
     options.series = {
         1: {
             pointSize: 5,
@@ -185,6 +192,10 @@ function drawPIRegulator() {
             visibleInLegend: false
         },
         3: {
+            pointSize: 5,
+            visibleInLegend: false
+        },
+        4: {
             pointSize: 5,
             visibleInLegend: false
         },
