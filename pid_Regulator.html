@@ -14,7 +14,7 @@
 
     <link rel="stylesheet" href="css/main.css">
     <script type="text/javascript" src="js/scripts.js"></script>
-    <script type="text/javascript" src="js/twoPointRegulator.js"></script>
+    <script type="text/javascript" src="js/pid_regulator.js"></script>
 </head>
 
 <body>
@@ -31,28 +31,63 @@
                         <a class="nav-link" aria-current="page" href="regulatingDistance.html">Regelstrecke</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="twoPointRegulator.html">2-Punkt-Regler</a>
+                        <a class="nav-link" href="twoPointRegulator.html">2-Punkt-Regler</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="pi_Regulator.html">PI-Regler</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="pid_Regulator.html">PID-Regler</a>
+                        <a class="nav-link active" href="#">PID-Regler</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-
     <div class="grid_container">
         <section class="chart_section">
-            <h1>2-Punkt-Regler</h1>
-            <div id="two_point_regulator" class="chart"></div>
+            <h1>PI-Regler mit 10*Kp</h1>
+            <div id="pi_hkp_regulator" class="chart"></div>
+            <table>
+                <tr>
+                    <th> Eigenschaft </th>
+                    <th> Wert </th>
+                </tr>
+                <tr>
+                    <td>Überschwingen</td>
+                    <td id="pi_hkp_regulator_overshoot">0</td>
+                </tr>
+                <tr>
+                    <td>Stationär Verstärkung</td>
+                    <td id="pi_hkp_regulator_kp">0</td>
+                </tr>
+                <tr>
+                    <td>Regelabweichung</td>
+                    <td id="pi_hkp_regulator_udev">0</td>
+                </tr>
+            </table>
         </section>
         <section class="chart_section">
-            <h1>2-Punkt-Regler ausgewertet</h1>
-            <div id="two_point_regulator_without_ur" class="chart"></div>
+            <h1>PID-Regler</h1>
+            <div id="pid_regulator" class="chart"></div>
+            <table>
+                <tr>
+                    <th> Eigenschaft </th>
+                    <th> Wert </th>
+                </tr>
+                <tr>
+                    <td>Überschwingen</td>
+                    <td id="pid_regulator_overshoot">0</td>
+                </tr>
+                <tr>
+                    <td>Stationär Verstärkung</td>
+                    <td id="pid_regulator_kp">0</td>
+                </tr>
+                <tr>
+                    <td>Regelabweichung</td>
+                    <td id="pi_hkp_regulator_udev">0</td>
+                </tr>
+            </table>
         </section>
     </div>
 </body>

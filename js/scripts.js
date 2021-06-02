@@ -35,3 +35,7 @@ function addPoint(arr, Ua, name, i, posInArr) {
 function addOvershoot(name, Uamax, Ua) {
     $(name).text(formatFloat((Uamax / Ua - 1) * 100) + " %");
 }
+
+function getKp() {
+    return T2 / T1 * Math.sqrt(2) / (2 * Vs);
+}
