@@ -38,7 +38,6 @@ function pwmOutput() {
 
     if (Ucount <= targetNumber) Uout = Tpwm;
     else Uout = 0;
-    
 
     arr.push([i, Uout]);
   }
