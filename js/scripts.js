@@ -19,6 +19,12 @@ function getDefaultOptions(title) {
     }
 }
 
+function getDefaultOptionsDAC(title){
+    let options = getDefaultOptions(title);
+    options.curveType = 'none';
+    return options;
+}
+
 function drawPoint(name, arr, time, pos = 3) {
     arr[time][pos] = name + " [" + time + "/" + formatFloat(arr[time][1]) + "]";
 }
