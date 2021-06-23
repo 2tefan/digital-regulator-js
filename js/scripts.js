@@ -27,6 +27,7 @@ function getDefaultOptions(title) {
 function getDefaultOptionsDAC(title) {
   let options = getDefaultOptions(title);
   options.curveType = "none";
+  options.vAxis.title = "Value";
   return options;
 }
 

@@ -48,14 +48,12 @@ function pwmOutput() {
 function drawCount() {
   let data = new google.visualization.DataTable();
   data.addColumn("number", "t");
-  data.addColumn("number", "Uout");
-  data.addColumn("number", "Value");
+  data.addColumn("number", "Z");
+  data.addColumn("number", "Zin");
 
   data.addRows(countOutput());
 
-  let options = getDefaultOptionsDAC("Counter Output");
-
-  options.vAxis.title = "Value";
+  let options = getDefaultOptionsDAC("Counter");
 
   let chart = new google.visualization.LineChart(
     document.getElementById("count_out")
@@ -67,7 +65,7 @@ function drawCount() {
 function drawPWM() {
   let data = new google.visualization.DataTable();
   data.addColumn("number", "t");
-  data.addColumn("number", "Upwm");
+  data.addColumn("number", "Zpwm");
 
   data.addRows(pwmOutput());
 
