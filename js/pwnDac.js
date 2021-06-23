@@ -1,22 +1,20 @@
 google.charts.setOnLoadCallback(drawCount);
 google.charts.setOnLoadCallback(drawPWM);
 google.charts.setOnLoadCallback(drawCountSin);
+google.charts.setOnLoadCallback(drawPWMSin);
 
 function countOutput() {
   let arr = [];
   let dt = 1;
-  let Uout = 0;
+  let Zcount = 0;
 
   let Tpwm = 100 + 10 * number;
   let Tmax = Tpwm * 20;
   let targetNumber = 50 + 10 * number;
 
   for (i = 0; i < Tmax; i += dt) {
-    Uout++;
-
-    if (i % Tpwm == 0) Uout = 0;
-
-    arr.push([i, Uout, targetNumber]);
+    Zcount = i % Tpwm;
+    arr.push([i, Zcount, targetNumber]);
   }
 
   return arr;
@@ -25,20 +23,20 @@ function countOutput() {
 function pwmOutput() {
   let arr = [];
   let dt = 1;
-  let Ucount = 0;
-  let Uout = 0;
+  let Zcount = 0;
+  let Zout = 0;
 
   let Tpwm = 100 + 10 * number;
   let Tmax = Tpwm * 20;
   let targetNumber = 50 + 10 * number;
 
   for (i = 0; i < Tmax; i += dt) {
-    Ucount = i % Tpwm;
+    Zcount = i % Tpwm;
 
-    if (Ucount <= targetNumber) Uout = Tpwm;
-    else Uout = 0;
+    if (Zcount <= targetNumber) Zout = Tpwm;
+    else Zout = 0;
 
-    arr.push([i, Uout]);
+    arr.push([i, Zout]);
   }
 
   return arr;
@@ -47,7 +45,31 @@ function pwmOutput() {
 function countOutputSin() {
   let arr = [];
   let dt = 1;
-  let Ucount = 0;
+  let Zcount = 0;
+  let Zin;
+
+  let Tpwm = 100 + 10 * number;
+  let Tmax = Tpwm * 20;
+
+  let amplitude = Tpwm / 2;
+  let Tsin = Tpwm * 20;
+
+  for (i = 0; i < Tmax; i += dt) {
+    Zin = amplitude * Math.sin((1 / Tsin) * 2 * Math.PI * i) + amplitude;
+    Zcount = i % Tpwm;
+
+    arr.push([i, Zcount, Zin]);
+  }
+
+  return arr;
+}
+
+function pwmOutputSin() {
+  let arr = [];
+  let dt = 1;
+  let Zcount = 0;
+  let Zin;
+  let Zout;
 
   let Tpwm = 100 + 10 * number;
   let Tmax = Tpwm * 20;
@@ -56,15 +78,13 @@ function countOutputSin() {
   let Tsin = 20 * Tpwm;
 
   for (i = 0; i < Tmax; i += dt) {
-    Ucount++;
+    Zin = amplitude * Math.sin((1 / Tsin) * 2 * Math.PI * i) + amplitude;
+    Zcount = i % Tpwm;
 
-    if (i % Tpwm == 0) Ucount = 0;
+    if (Zcount <= Zin) Zout = Tpwm;
+    else Zout = 0;
 
-    arr.push([
-      i,
-      Ucount,
-      amplitude * Math.sin((1 / Tsin) * 2 * Math.PI * i) + amplitude,
-    ]);
+    arr.push([i, Zout]);
   }
 
   return arr;
@@ -115,6 +135,22 @@ function drawCountSin() {
 
   let chart = new google.visualization.LineChart(
     document.getElementById("count_out_sin")
+  );
+
+  chart.draw(data, options);
+}
+
+function drawPWMSin() {
+  let data = new google.visualization.DataTable();
+  data.addColumn("number", "t");
+  data.addColumn("number", "Zpwm");
+
+  data.addRows(pwmOutputSin());
+
+  let options = getDefaultOptionsDAC("PWM");
+
+  let chart = new google.visualization.LineChart(
+    document.getElementById("pwm_out_sin")
   );
 
   chart.draw(data, options);
